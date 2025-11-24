@@ -65,91 +65,16 @@ A modern **Streamlit “Glassmorphism” UI** with:
 - Pandas  
 - Scikit-Learn  
 
----
-
-## 📂 Project Structure
-
-SENTINEL-AI/
-├── app.py # Main Streamlit Dashboard
-├── generate_crowd_data.py # Synthetic dataset creation
-├── prepare_data.py # Preprocessing → sequences (.npy)
-├── train_model.py # LSTM model training pipeline
-├── crowd_data.csv # Base dataset
-├── requirements.txt # Dependencies
-│
-├── Models/
-│ ├── lstm_crowd_behavior.h5 # Trained LSTM model
-│ ├── yolov8n.pt # YOLOv8 weights
-│ └── yolov8n-pose.pt # YOLO-Pose weights
-│
-└── Data_Artifacts/ # Auto-generated
-├── X_train.npy
-├── y_train.npy
-└── label_encoder_classes.npy
-
----
-
-## ⚡ Installation & Setup
+## ⚡ How to Run Sentinel AI
 
 ### 1️⃣ Clone the Repository
-
+```bash
 git clone https://github.com/Ayushpk01/SENTINEL-AI.git
 cd SENTINEL-AI
-2️⃣ Install Dependencies
-It is recommended to use a virtual environment:
-
-bash
-Copy code
 pip install -r requirements.txt
-3️⃣ Run the System
-Launch the interactive dashboard:
-
-bash
-Copy code
 streamlit run app.py
-🧠 Model Workflow (Pipeline)
-1. Feature Extraction
-📌 For each frame:
+python prepare_lstm_data.py
+python train_lstm.py
+streamlit run analyze_crowd.py
 
-Density = count of people / frame area
-
-Velocity = average movement (optical flow + tracking ID history)
-
-Pose Variance = deviation of key joint angles (shoulders, legs, neck)
-
-2. Sequence Aggregation
-Frames are stored in a sliding window
-
-Sequence length = 10 frames
-
-Shape → (1, 10, 3) → [density, motion, pose]
-
-3. LSTM Prediction
-Model predicts crowd state based on past 10 frames
-
-Output → Calm | Dispersing | Aggressive | Stampede
-
-4. RL Adaptive Tuning
-Q-Learning agent monitors:
-
-Stability
-
-False positives/negatives
-
-Adjusts thresholds dynamically
-
-🔮 Future Roadmap
- RTSP (IP Camera) integration
-
- Email/SMS alerting via Twilio
-
- 3D crowd density mapping
-
- Jetson Nano edge deployment
-
- Turbulence & panic-wave detection
-
-👤 Author
-Ayush PK
-GitHub: https://github.com/Ayushpk01
 
