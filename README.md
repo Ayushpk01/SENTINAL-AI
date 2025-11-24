@@ -98,12 +98,6 @@ Adaptive Tuning (RL):
 
 A Q-Learning agent monitors the stability of the system. If false positives occur, it adjusts the sensitivity thresholds dynamically.
 
-📸 Screenshots
-
-        
-
-
-
 🔮 Future Roadmap
 
 [ ] Integration with live IP Cameras (RTSP).
