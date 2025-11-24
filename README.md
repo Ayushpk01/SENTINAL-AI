@@ -1,113 +1,155 @@
-🛡️ SENTINEL AI - Autonomous Crowd Safety System
+# 🛡️ SENTINEL AI – Autonomous Crowd Safety System
 
-Sentinel AI is an advanced crowd analysis and anomaly detection system. It leverages Computer Vision (YOLOv8 & Pose Estimation), Deep Learning (LSTM), and Reinforcement Learning (Q-Learning) to monitor video feeds in real-time, detecting potential threats like stampedes or aggressive behavior before they escalate.
+**Sentinel AI** is an advanced real-time **crowd analysis** and **anomaly detection** system.  
+It leverages **Computer Vision**, **Deep Learning**, and **Reinforcement Learning** to detect early signs of **stampedes, chaos, aggression, and crowd instability**.
 
-🚀 Key Features
+---
 
-Real-Time Detection: Uses YOLOv8 to track individuals and YOLO-Pose to analyze body language variance.
+## 🚀 Key Features
 
-Behavior Classification: Classifies crowd state into 4 distinct categories using an LSTM Neural Network:
+### 🔍 Real-Time Detection
+- **YOLOv8** → Person detection & tracking  
+- **YOLO-Pose (Keypoints)** → Body movement & limb-angle variance  
+- **Optical Flow + ByteTrack** → Motion velocity & crowd flow direction  
 
-🟢 Calm: Normal flow.
+### 🧠 Behavior Classification (LSTM-Based)
+The LSTM model classifies crowd behavior into **4 states**:
 
-🔵 Dispersing: Crowd leaving an area.
+| State | Meaning |
+|-------|---------|
+| 🟢 **Calm** | Normal, smooth crowd flow |
+| 🔵 **Dispersing** | People moving out of an area |
+| 🟡 **Aggressive** | Chaotic behavior, fights, erratic motion |
+| 🔴 **Stampede** | High speed + high density + unidirectional movement |
 
-🟡 Aggressive: Erratic movements, fighting, or high pose variance.
+### 🤖 Adaptive Sensitivity (RL Agent)
+A **Q-Learning agent** automatically adjusts:
+- Density thresholds  
+- Motion sensitivity  
+- Pose variance tolerance  
 
-🔴 Stampede: High speed, high density, unidirectional flow.
+This reduces **false positives** and improves reliability.
 
-Adaptive Sensitivity: Features a Reinforcement Learning (RL) Agent that automatically adjusts detection thresholds based on environmental stability.
+### 🖥️ Live Dashboard
+A modern **Streamlit “Glassmorphism” UI** with:
+- Real-time video feed  
+- Heatmaps  
+- Crowd density graphs  
+- Alerts & telemetry panel  
 
-Live Dashboard: A "Glassmorphism" UI built with Streamlit featuring real-time telemetry graphs, heatmaps, and alert systems.
+---
 
-🛠️ Tech Stack
+## 🛠️ Tech Stack
 
-Language: Python 3.x
+### **Language**
+- Python 3.x
 
-Vision: Ultralytics YOLOv8, OpenCV, Supervision
+### **Computer Vision**
+- Ultralytics YOLOv8  
+- YOLO-Pose  
+- OpenCV  
+- Supervision Toolkit  
 
-Deep Learning: TensorFlow/Keras (LSTM)
+### **Deep Learning**
+- TensorFlow / Keras  
+- LSTM Neural Network  
 
-Data Processing: NumPy, Pandas, Scikit-Learn
+### **Reinforcement Learning**
+- Q-Learning Algorithm
 
-Interface: Streamlit
+### **Frontend**
+- Streamlit  
 
-📂 Project Structure
+### **Utilities**
+- NumPy  
+- Pandas  
+- Scikit-Learn  
+
+---
+
+## 📂 Project Structure
 
 SENTINEL-AI/
-├── app.py                     # Main Sentinel AI Dashboard (Streamlit)
-├── generate_crowd_data.py     # Generates synthetic training data
-├── prepare_data.py            # Preprocesses CSV data into sequences (.npy)
-├── train_model.py             # Trains the LSTM model
-├── crowd_data.csv             # The dataset used for training
-├── requirements.txt           # Dependencies
+├── app.py # Main Streamlit Dashboard
+├── generate_crowd_data.py # Synthetic dataset creation
+├── prepare_data.py # Preprocessing → sequences (.npy)
+├── train_model.py # LSTM model training pipeline
+├── crowd_data.csv # Base dataset
+├── requirements.txt # Dependencies
 │
 ├── Models/
-│   ├── lstm_crowd_behavior.h5    # Trained LSTM Model
-│   ├── yolov8n.pt                # Object Detection Weights
-│   └── yolov8n-pose.pt           # Pose Estimation Weights
+│ ├── lstm_crowd_behavior.h5 # Trained LSTM model
+│ ├── yolov8n.pt # YOLOv8 weights
+│ └── yolov8n-pose.pt # YOLO-Pose weights
 │
-└── Data_Artifacts/            # Generated during preprocessing
-    ├── X_train.npy
-    ├── y_train.npy
-    └── label_encoder_classes.npy
+└── Data_Artifacts/ # Auto-generated
+├── X_train.npy
+├── y_train.npy
+└── label_encoder_classes.npy
 
+---
 
-⚡ Installation & Setup
+## ⚡ Installation & Setup
 
-Clone the Repository
+### 1️⃣ Clone the Repository
 
-git clone [https://github.com/Ayushpk01/SENTINEL-AI.git](https://github.com/Ayushpk01/SENTINEL-AI.git)
+git clone https://github.com/Ayushpk01/SENTINEL-AI.git
 cd SENTINEL-AI
+2️⃣ Install Dependencies
+It is recommended to use a virtual environment:
 
-
-
-Install Dependencies
-It is recommended to use a virtual environment.
-
+bash
+Copy code
 pip install -r requirements.txt
+3️⃣ Run the System
+Launch the interactive dashboard:
 
-
-Run the System
-To launch the dashboard:
-
+bash
+Copy code
 streamlit run app.py
+🧠 Model Workflow (Pipeline)
+1. Feature Extraction
+📌 For each frame:
 
+Density = count of people / frame area
 
-🧠 Model Workflow
+Velocity = average movement (optical flow + tracking ID history)
 
-The system operates in a 4-stage pipeline:
+Pose Variance = deviation of key joint angles (shoulders, legs, neck)
 
-Feature Extraction:
+2. Sequence Aggregation
+Frames are stored in a sliding window
 
-Density: Calculated via person count vs. frame area.
+Sequence length = 10 frames
 
-Flow Velocity: Average pixel distance moved per ID (ByteTrack).
+Shape → (1, 10, 3) → [density, motion, pose]
 
-Pose Variance: Analyzing shoulder/limb angles for chaotic movement.
+3. LSTM Prediction
+Model predicts crowd state based on past 10 frames
 
-Sequence Aggregation:
+Output → Calm | Dispersing | Aggressive | Stampede
 
-Data is stored in a sliding window buffer (Sequence Length = 10 frames).
+4. RL Adaptive Tuning
+Q-Learning agent monitors:
 
-Prediction (LSTM):
+Stability
 
-The sequence (1, 10, 3) is fed into the LSTM model to predict the next state.
+False positives/negatives
 
-Adaptive Tuning (RL):
-
-A Q-Learning agent monitors the stability of the system. If false positives occur, it adjusts the sensitivity thresholds dynamically.
+Adjusts thresholds dynamically
 
 🔮 Future Roadmap
+ RTSP (IP Camera) integration
 
-[ ] Integration with live IP Cameras (RTSP).
+ Email/SMS alerting via Twilio
 
-[ ] Email/SMS Alert system via Twilio.
+ 3D crowd density mapping
 
-[ ] 3D Crowd Density mapping.
+ Jetson Nano edge deployment
 
-[ ] Deployment on Edge Devices (Jetson Nano).
+ Turbulence & panic-wave detection
 
+👤 Author
+Ayush PK
+GitHub: https://github.com/Ayushpk01
 
-
-Author: Ayushpk01
